@@ -1,3 +1,3 @@
-# \(\ell_1\)-HOUDINI
+# l1-HOUDINI
 
-$\ell_1$-HOUDINI is a primal-dual homotopy algorithm for $\ell_1$-minimization with $\ell_{\infty}$-constraints.
+l1-HOUDINI is a primal-dual homotopy algorithm for l1-minimization with maximum norm constraints.
