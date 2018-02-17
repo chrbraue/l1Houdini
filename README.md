@@ -13,7 +13,7 @@ This repository includes a MATLAB implementation of the algorithm and some illus
 
 - Compute the entire primal and dual solution paths together with the corresponding parameters:
 ```matlab
-[pathX, pathDelta, pathY] = l1HoudiniPath(A, b, delta)
+[pathX, pathDelta, pathY] = l1HoudiniPath(A, b, 0)
 ```
 
 Further reading:
