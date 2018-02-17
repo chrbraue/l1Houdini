@@ -1,11 +1,8 @@
--
+- to compute a primal-dual optimal pair (x, y) for the problem ![p_delta](https://github.com/chrbraue/l1Houdini/blob/master/images/p_delta.jpg) use
 ```matlab
 [x, y] = l1Houdini(A, b, Delta)
 ```
-computes a primal-dual optimal pair (x, y) for the problem<br><br>
 
-
-> ![p_delta](https://github.com/chrbraue/l1Houdini/blob/master/images/p_delta.jpg)
 
 -
 ```matlab
