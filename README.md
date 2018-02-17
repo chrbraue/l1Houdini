@@ -2,8 +2,9 @@
 
 
 
-'''matlab
-[x, y] = l1Houdini(A, b, Delta)'''
+```matlab
+[x, y] = l1Houdini(A, b, Delta)
+```
 computes an optimal pair (x, y) for the problem
 
 
