@@ -11,6 +11,9 @@
 % contact email address: ch.brauer@tu-braunschweig.de
 % February 2018; Last revision: 17-February-2018
 
+% add path to algorithm
+addpath ..;
+
 % set dimension of feature space
 p = 100;
 
