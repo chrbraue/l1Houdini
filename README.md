@@ -1,8 +1,10 @@
 ## ![ell_1_big](https://github.com/chrbraue/l1Houdini/blob/master/aux/ell_1_big.jpg)-HOUDINI
 
 ![ell_1](https://github.com/chrbraue/l1Houdini/blob/master/aux/ell_1.jpg)-HOUDINI is a primal-dual homotopy algorithm for the problem
-
+----
 ![p_delta](https://github.com/chrbraue/l1Houdini/blob/master/aux/p_delta.jpg)
+
+This repository includes a MATLAB implementation of the algorithm and some illustrating examples.
 
 - Compute a single primal-dual optimal pair:
 ```matlab
@@ -13,8 +15,6 @@
 ```matlab
 [pathX, pathDelta, pathY] = l1HoudiniPath(A, b, Delta)
 ```
-
-This repository includes a MATLAB implementation of the algorithm and some illustrating examples.
 
 Further reading:
 
