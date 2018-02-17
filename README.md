@@ -1,7 +1,10 @@
 ![l_1](https://github.com/chrbraue/l1Houdini/blob/master/images/ell_1.jpg)-HOUDINI is a homotopy algorithm for sparse recovery with maximum norm constraints.
 
 
-**[x, y] = l1Houdini(A, b, Delta)** computes an optimal pair (x, y) for the problem
+
+'''matlab
+[x, y] = l1Houdini(A, b, Delta)'''
+computes an optimal pair (x, y) for the problem
 
 
 > ![p_delta](https://github.com/chrbraue/l1Houdini/blob/master/images/p_delta.jpg)
