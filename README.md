@@ -12,3 +12,7 @@
 ```matlab
 [pathX, pathDelta, pathY] = l1HoudiniPath(A, b, Delta)
 ```
+
+This repository includes a MATLAB implementation of the algorithm and some illustrating examples. A detailed derivation and discussion can be found in
+
+Brauer, Christoph, Lorenz, Dirk A. and Tillmann, Andreas M. *A primal-dual homotopy algorithm for ![ell_1](https://github.com/chrbraue/l1Houdini/blob/master/aux/ell_1.jpg)-minimization with ![ell_1](https://github.com/chrbraue/l1Houdini/blob/master/aux/ell_infty.jpg)-constraints*
