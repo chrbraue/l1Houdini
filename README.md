@@ -1,4 +1,4 @@
-## ![ell_1_big](https://github.com/chrbraue/l1Houdini/blob/master/aux/ell_1_big.jpg)-HOUDINI <img src="https://github.com/chrbraue/l1Houdini/blob/master/aux/houdini.jpg" width="50">
+## ![ell_1_big](https://github.com/chrbraue/l1Houdini/blob/master/aux/ell_1_big.jpg)-HOUDINI
 
 ![ell_1](https://github.com/chrbraue/l1Houdini/blob/master/aux/ell_1.jpg)-HOUDINI is a primal-dual homotopy algorithm for the problem
 
