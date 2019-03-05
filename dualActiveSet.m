@@ -112,13 +112,13 @@ while true
     actSetAlpha(actSetCand) = (1 - sign(aTE(actSetCand)) .* aTY(actSetCand)) ./ abs(aTE(actSetCand));
     suppCand(id) = e(id) .* signAXMinusB(id) < -supTol;
     suppAlpha(suppCand) = -y(suppCand) ./ e(suppCand);
-    alpha = min([actSetAlpha; suppAlpha]);
+    alpha = min([actSetAlpha; suppAlpha; (conTol - max(abs(abs(A(id, jd)' * y(id)) - 1))) / conErr]);
     
-    % check whether the step alpha * e is feasible
-    if max(conErr, objErr) <= 1e-6 && alpha * conErr <= conTol && alphaOld >= 0
+    % check whether step in direction alpha is feasible
+    if max(conErr, objErr) <= 1e-6 && alpha < inf && alphaOld >= 0
         
         if alpha > 0
-
+            
             % update iterate
             y(id) = y(id) + alpha * e(id);
             

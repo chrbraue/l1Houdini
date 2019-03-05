@@ -42,8 +42,8 @@ if norm(b, inf) <= Delta
 end
 
 % initialize numerical tolerances, ...
-supTol = 1e-9;
-conTol = 1e-7;
+supTol = 1e-12;
+conTol = 1e-10;
 optTol = 1e-6;
 % (if the algorithm gets stuck at some point, it may help to change these
 % tolerances)

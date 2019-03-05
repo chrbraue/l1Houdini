@@ -1,23 +1,22 @@
-function [betaCV, lambdaCV, rateCV, figureHandle] = sldaCVFunction(X, Y, N, plot)
+function [betaCV, lambdaCV, accCV, plotDataCV] = sldaCVFunction(X, Y, N)
 %SLDACVFUNCTION - cross validation scheme for sparse linear discriminant analysis
-%sldaCVFunction(X, Y, N, plot) performs an N-fold cross-validation scheme for
+%sldaCVFunction(X, Y, N) performs an N-fold cross-validation scheme for
 %sparse linear discriminant analysis (slda) using the l1-Houdini algorithm
 %
-% Syntax: [betaCV, lambdaCV, rateCV, figureHandle] = sldaCVFunction(X, Y, N, plot)
+% Syntax: [betaCV, lambdaCV, accCV, plotDataCV] = sldaCVFunction(X, Y, N)
 %
 % Input:
 %    X - samples from class 1 (p x nX matrix)
 %    Y - samples from class 2 (p x nY matrix)
 %    N - number of folds (integer)
-%    plot - switches plot on/off (boolean)
 %    
 % Output:
 %    betaCV - linear predictor (p vector)
-%    lambdaCV - tuning parameter associated wit betaCV
-%    rateCV - predicted success rate
-%    figureHandle - figure handle (if plot = true) or empty (else)
+%    lambdaCV - tuning parameter associated wit betaCV (scalar)
+%    accCV - predicted accuracy (scalar)
+%    plotDataCV - cell containing plot data (estimated out-of-sample accuracy)
 %
-% Example: see sldaCVExample.m
+% Example: see exampleFSC.m
 %
 % The vector betaCV can be used to classify samples z with unknown class
 % via a variant of Fisher's linear discriminant rule. Writing
@@ -32,7 +31,7 @@ function [betaCV, lambdaCV, rateCV, figureHandle] = sldaCVFunction(X, Y, N, plot
 
 % Author: Christoph Brauer (TU Braunschweig)
 % contact email address: ch.brauer@tu-braunschweig.de
-% February 2018; Last revision: 17-February-2018
+% February 2018; Last revision: 04-March-2019
     
 % get numbers of positive / negative training examples
 nX = size(X, 2);
@@ -52,7 +51,7 @@ betaPathsHoudini = cell(1, N);
 lambdaPathsHoudini = cell(1, N);
 lambdaPathsCV = cell(1, N);
 lambdaPathsCVUnion = [];
-ratePathsCV = cell(1, N);
+accuracyPathsCV = cell(1, N);
 lambdaMin = 0;
 lambdaMax = 0;
 
@@ -75,12 +74,12 @@ for l = 1:N
         / (length(trainFoldX) + length(trainFoldY));
     % calculate l-th solution path
     [betaPathsHoudini{l}, lambdaPathsHoudini{l}] = ...
-        l1HoudiniPath(SigmaHat, XBar - YBar, 0);
+        l1HoudiniPath(SigmaHat, XBar - YBar, lambdaMin);
     lambdaMin = max(lambdaMin, lambdaPathsHoudini{l}(end));
     lambdaMax = max(lambdaMax, lambdaPathsHoudini{l}(1));
 end
     
-% calculate each folds parameter and success rate paths
+% calculate each folds parameter and accuracy paths
 for l = 1:N
     % determine testing data for current fold
     if l < N
@@ -93,7 +92,7 @@ for l = 1:N
     % initialize paths (if beta = 0, exactly all samples from class 1 are
     % classified correctly)
     lambdaPathCV = lambdaPathsHoudini{l}(1);
-    ratePathCV = length(testFoldX);
+    accuracyPathCV = length(testFoldX);
     % compute jumps of CV_l along the path up to lambdaMin
     for k = 2:length(lambdaPathsHoudini{l})
         % calculate direction
@@ -118,67 +117,60 @@ for l = 1:N
         [lambdaTmp, indexTmp] = sort([lambdaX; lambdaY]);
         lambdaPathCV = [lambdaTmp; lambdaPathCV]; %#ok<*AGROW>
         cTmp = [cX; cY];
-        ratePathCV = [ratePathCV(1) + cumsum(cTmp(indexTmp), 'reverse')...
-            ; ratePathCV];
+        accuracyPathCV = [accuracyPathCV(1) + cumsum(cTmp(indexTmp), 'reverse')...
+            ; accuracyPathCV];
     end    
     % remove redundant entries and add one for lambdaMax + eps (so that
-    % success rate for lambda > lambdaMax is represented)
+    % accuracy for lambda > lambdaMax is represented)
     [lambdaPathsCV{l}, indexTmp] = unique(lambdaPathCV);
-    lambdaPathsCV{l} = [lambdaPathsCV{l}; lambdaMax + 1];
-    ratePathsCV{l} = [ratePathCV(indexTmp); length(testFoldX)] / ...
+    lambdaPathsCV{l} = [lambdaPathsCV{l}; lambdaMax + (lambdaMax - lambdaMin) / 10];
+    accuracyPathsCV{l} = [accuracyPathCV(indexTmp); length(testFoldX)] / ...
         (length(testFoldX) + length(testFoldY));
     % add entry for lambdaMin (which will be the smallest point on the
     % final path) and remove entries below lambdaMin
     [lambdaPathsCVTmp, ~, indexTmp] = unique([lambdaMin; lambdaPathsCV{l}]);
     if indexTmp(1) > 1
-        ratePathsCV{l} = [ratePathsCV{l}(1:indexTmp(1) - 1); ...
-            interp1(lambdaPathsCV{l}, ratePathsCV{l}, lambdaMin, 'next'); ...
-            ratePathsCV{l}(indexTmp(1):end)];
+        accuracyPathsCV{l} = [accuracyPathsCV{l}(1:indexTmp(1) - 1); ...
+            interp1(lambdaPathsCV{l}, accuracyPathsCV{l}, lambdaMin, 'next'); ...
+            accuracyPathsCV{l}(indexTmp(1):end)];
         lambdaPathsCV{l} = lambdaPathsCVTmp;
         indexTmp2 = lambdaPathsCV{l} >= lambdaMin;
         lambdaPathsCV{l} = lambdaPathsCV{l}(indexTmp2);
-        ratePathsCV{l} = ratePathsCV{l}(indexTmp2);
+        accuracyPathsCV{l} = accuracyPathsCV{l}(indexTmp2);
     else
         lambdaPathsCV{l} = [lambdaMin; lambdaPathsCV{l}];
-        ratePathsCV{l} = [ratePathsCV{l}(1); ratePathsCV{l}];
+        accuracyPathsCV{l} = [accuracyPathsCV{l}(1); accuracyPathsCV{l}];
     end
     % add l-th parameter path to final parameter grid
     lambdaPathsCVUnion = unique([lambdaPathsCVUnion; lambdaPathsCV{l}]);    
 end
     
-% calculate mean of all success rate curves
-ratePathsInterp = zeros(length(lambdaPathsCVUnion), N);
+% calculate mean of all accuracy curves
+accuracyPathsInterp = zeros(length(lambdaPathsCVUnion), N);
 for l = 1:N
-    ratePathsInterp(:, l) = interp1(lambdaPathsCV{l}, ratePathsCV{l}, ...
+    accuracyPathsInterp(:, l) = interp1(lambdaPathsCV{l}, accuracyPathsCV{l}, ...
         lambdaPathsCVUnion, 'next');
 end
-ratePathsMean = mean(ratePathsInterp, 2);
+accuracyPathsMean = mean(accuracyPathsInterp, 2);
     
 % calculate optimal lambda
-[rateCV, indexRateCV] = max(ratePathsMean);
-lambdaCV = lambdaPathsCVUnion(indexRateCV);
+[accCV, indexAccuracyCV] = max(accuracyPathsMean);
+lambdaCV = lambdaPathsCVUnion(indexAccuracyCV);
 if lambdaCV > lambdaMin
-   lambdaCV = (lambdaCV + lambdaPathsCVUnion(indexRateCV - 1)) / 2; 
+   lambdaCV = (lambdaCV + lambdaPathsCVUnion(indexAccuracyCV - 1)) / 2; 
 end
     
 % calculate final model with best parameter and full data
 XBar = mean(X, 2);
 YBar = mean(Y, 2);
-SigmaHat = ((X - XBar) * (X - XBar)'  ...
-        + (Y - YBar) * (Y - YBar)') ...
-        / (nX + nY);
+SigmaHat = ((X - XBar) * (X - XBar)' + (Y - YBar) * (Y - YBar)') / (nX + nY);
 betaTmp = l1HoudiniPath(SigmaHat, XBar - YBar, lambdaCV);
 betaCV = betaTmp(:, end);
     
-% plot ratePathsMean
-figureHandle = [];
-if plot
-    figureHandle = figure;
-    set(gcf, 'Visible', 'off');
-    set(gca, 'XLim', [lambdaMin, lambdaMax + 1]);
-    set(gca, 'YLim', [min(min(ratePathsMean), .45), 1]);
-    xlabel('$\lambda$', 'Interpreter', 'latex');
-    ylabel('$\mathrm{CV}(\lambda)$', 'Interpreter', 'latex');
-    hold on;
-    stairs([lambdaMin; lambdaPathsCVUnion], [ratePathsMean; 0.5], 'k');
-end
+% prepare struct with plot data
+plotDataCV = {};
+plotDataCV{1} = [lambdaMin; lambdaPathsCVUnion];
+plotDataCV{2} = [accuracyPathsMean; size(X, 2) / (size(X, 2) + size(Y, 2))];
+plotDataCV{3} = lambdaMin;
+plotDataCV{4} = lambdaMax;
+plotDataCV{5} = accuracyPathsInterp;
