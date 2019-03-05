@@ -6,8 +6,8 @@ function [xCV, deltaCV, errCV, pathDelta, pathError] = chebyshewCVFunction(A, b,
 % Syntax: [xCV, deltaCV, errCV, pathDelta, pathError] = chebyshewCVFunction(A, b, N)
 %
 % Input:
-%    A - 
-%    b - 
+%    A - m x n matrix
+%    b - m vector
 %    N - number of folds (integer)
 %    
 % Output:
@@ -27,7 +27,7 @@ function [xCV, deltaCV, errCV, pathDelta, pathError] = chebyshewCVFunction(A, b,
 
 % Author: Christoph Brauer (TU Braunschweig)
 % contact email address: ch.brauer@tu-braunschweig.de
-% February 2018; Last revision: 17-February-2018
+% February 2018; Last revision: 05-March-2019
 
 % initialize variables
 pathX = {};

@@ -1,6 +1,4 @@
-%CHEBYSHEWCVEXAMPLE - random example for chebyshewCVFunction
-%
-% This example reproduces Fig. 2 in [Brauer et al. 2018]
+%CHEBYSHEWCVEXAMPLE - reproduces Fig. 2 in (*)
 %
 % Other m-files required: l1HoudiniPath.m, primalActiveSet.m,
 %       dualActiveSet.m, chebyshewCVFunction.m
@@ -9,10 +7,13 @@
 %
 % See also: L1HOUDINIPATH, PRIMALACTIVESET,  DUALACTIVESET,
 % CHEBYSHEWCVFUNCTION
-
+%
+% (*) C. Brauer, D. Lorenz, A. Tillmann: A primal-dual homotopy algorithm
+%     for l_1-minimization with l_inf-constraints
+%
 % Author: Christoph Brauer (TU Braunschweig)
 % contact email address: ch.brauer@tu-braunschweig.de
-% February 2018; Last revision: 17-February-2018
+% February 2018; Last revision: 05-March-2019
 
 % add path to algorithm
 addpath ..;
